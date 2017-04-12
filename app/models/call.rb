@@ -22,11 +22,11 @@ class Call < ActiveRecord::Base
   enum status: [:unstarted, :started, :connected, :failed]
   belongs_to :page
   belongs_to :member
+  belongs_to :action
 
   validates :page, presence: true
   validates :member_phone_number, presence: true
   validates :target, presence: true
-
   validate :member_phone_number_is_valid
 
   delegate :sound_clip, to: :call_tool

@@ -95,6 +95,8 @@ module ActionQueue
         end
       when :new_survey_response
         NewSurveyResponse.push(action)
+      when :new_call
+        NewCallAction.push(action)
       end
     end
   end
@@ -131,6 +133,14 @@ module ActionQueue
     def payload
       super.tap do |p|
         p[:type] = 'new_survey_response'
+      end
+    end
+  end
+
+  class NewCallAction < NewPetitionAction
+    def payload
+      super.tap do |p|
+        p[:type] = 'new_call'
       end
     end
   end

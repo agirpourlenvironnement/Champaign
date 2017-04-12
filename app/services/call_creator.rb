@@ -9,8 +9,8 @@ class CallCreator
 
   def run
     sanitize_params!
-    page = Page.find(@params[:page_id])
-    @call = Call.new(page: page,
+    @page = Page.find(@params[:page_id])
+    @call = Call.new(page: @page,
                      member_id: @params[:member_id],
                      member_phone_number: @params[:member_phone_number],
                      target_id: @params[:target_id])
@@ -21,6 +21,11 @@ class CallCreator
     if errors.blank?
       Call.transaction do
         place_call if @call.save
+      end
+
+      if @call.persisted? && !@call.failed?
+        create_action
+        publish_event
       end
     end
 
@@ -70,6 +75,26 @@ class CallCreator
       Rails.logger.error("Twilio Error: API responded with code #{e.code} for #{@call.attributes.inspect}")
       add_error(:base, I18n.t('call_tool.errors.unknown'))
     end
+  end
+
+  def create_action
+    return if @call.member.blank?
+    @action = Action.create!(
+      page: @page,
+      member: @call.member,
+      form_data: {
+        phone: @call.member_phone_number,
+        action_call_status: @call.status,
+        action_target_call_status: @call.target_call_status,
+        action_target: @call.target.to_hash
+      }
+    )
+    @call.update!(action: @action)
+  end
+
+  def publish_event
+    return if @action.blank?
+    ActionQueue::Pusher.push(:new_call, @action)
   end
 
   # If the targets are updated while the user is on the call tool page, the list

@@ -51,6 +51,23 @@ describe CallCreator do
       )
       CallCreator.new(params).run
     end
+
+    it 'publishes the event' do
+      expect(ActionQueue::Pusher).to receive(:push).with(:new_call, an_instance_of(Action))
+      CallCreator.new(params).run
+    end
+
+    it 'creates an action' do
+      expect {
+        CallCreator.new(params).run
+      }.to change(Action, :count).by(1)
+
+      action = Action.last
+      call = Call.last
+      expect(action.page).to eq page
+      expect(action.member).to eq member
+      expect(call.action).to eq action
+    end
   end
 
   context 'given invalid params' do
