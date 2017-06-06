@@ -129,7 +129,6 @@ class CallToolView extends Component {
     const code = countryCode || this.state.selectedCountryCode;
     if (this.props.targetByCountryEnabled) {
       const candidates = filter(this.props.targets, t => t.countryCode === code);
-      console.log('candidates: ', candidates);
       return candidates;
     }
     return this.props.targets;
@@ -163,7 +162,6 @@ class CallToolView extends Component {
   }
 
   selectTarget = (id: string) => {
-    console.log('selectTarget:', id);
     const target = find(this.props.targets, { id });
     this.setState((prevState) => ({
       ...prevState,

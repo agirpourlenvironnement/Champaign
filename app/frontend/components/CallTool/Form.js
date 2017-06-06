@@ -79,7 +79,6 @@ class Form extends Component {
   }
 
   componentWillReceiveProps(newProps: OwnProps) {
-    console.log('new props: ', newProps);
     if (this.fields) {
       this.fields.targets = { ...targetField, choices: this.targetOptions(newProps.targets) };
     }
