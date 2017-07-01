@@ -1,18 +1,22 @@
 web:
   build: .
+  dockerfile: Dockerfile.development
   volumes:
     - .:/champaign
     - ../sou-assets:/sou-assets
   ports:
     - "3000:3000"
+    - "8080:8080"
   links:
     - db
     - redis
   environment:
     PG_USERNAME: postgres
     PG_HOST: db
+    PG_PORT: 5432
+
   env_file:
-    - .env
+    - env-docker.yml
 
 db:
   image: postgres
