@@ -21,8 +21,6 @@ const slugView = Backbone.View.extend({
     submit: 'submit',
   },
 
-  slugCheckEnabled: window.champaign.configuration.actionKitEnabled,
-
   initialize() {
     this.slugChecker = new slugChecker();
     this.slugChecker.on('change:valid', _.bind(this.updateViewWithValid, this));
@@ -120,7 +118,7 @@ const slugView = Backbone.View.extend({
 
     this.disableButton(this.$checkButton.text('Checking...'));
 
-    if (this.slugCheckEnabled && !this.slugChecker.get('valid')) {
+    if (process.env.AK_API_URL && !this.slugChecker.get('valid')) {
       this.checkSlugAvailable(e, () => {
         if (this.slugChecker.get('valid')) {
           this.$el.unbind();
