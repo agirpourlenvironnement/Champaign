@@ -4,6 +4,11 @@ web:
   volumes:
     - .:/champaign
     - ../sou-assets:/sou-assets
+    - /champaign/node_modules/
+    - /champaign/tmp/
+    - /champaign/public/packs/
+    - /champaign/public/packs-test/
+    - /public/system/
   ports:
     - "3000:3000"
     - "8080:8080"
@@ -16,7 +21,7 @@ web:
     PG_PORT: 5432
 
   env_file:
-    - env-docker.yml
+    - .env-docker
 
 db:
   image: postgres

@@ -23,6 +23,7 @@ coverage/
 public/uploads*
 
 .env
+.env-docker
 
 queue_listeners/config/env.yml
 
